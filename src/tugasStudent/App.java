@@ -36,7 +36,7 @@ public class App {
 				System.out.println("==================================================================");
 				
 				//Show Students Name
-				for(int i = 0 ; i<2 ; i++) {
+				for(int i = 0 ; i<3 ; i++) {
 					//Print Index
 					System.out.print(i+1 + ". ");
 					//Print Full Name
