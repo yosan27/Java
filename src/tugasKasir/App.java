@@ -40,6 +40,12 @@ public class App{
 				//User Input
 				int menu = input.nextInt();
 				
+				//Print Display
+				System.out.print("Quantity : ");
+				
+				//User Input
+				int qty = input.nextInt();
+				
 				//Check User Input
 				if(menu <= cashier.getData() && menu != 0) {
 					
@@ -49,7 +55,7 @@ public class App{
 					System.out.println("================================================================================");
 					
 					//Call Method
-					cashier.setFood(menu);
+					cashier.setFood(menu, qty);
 					cashier.getFood(DataProcess.orderIndex+1);
 					
 					//Increment Customer Order Indexs					

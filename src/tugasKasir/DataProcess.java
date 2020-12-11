@@ -16,7 +16,7 @@ public class DataProcess extends Menu implements Receipt{
 	String formatted = dateTime.format(format);
 	
 //	Arrays Orders
-	private String[][] ordersFood = new String[10][2];
+	private String[][] ordersFood = new String[10][3];
 	
 // 	Array Description
 	private String [] description = {"Food Name\t: ", "Price\t\t: "};
@@ -86,14 +86,15 @@ public class DataProcess extends Menu implements Receipt{
 	
 	
 //	Setter Customer Order Foods
-	public void setFood(int menuNumber) {
+	public void setFood(int menuNumber, int qty) {
 		//Looping for Multidimentional Array
 		for(int a=this.menuIndex-1 ; a<this.menuIndex ; a++) { //Read arrays[Menu Index from parameter]
 				for(int b=0 ; b<this.allMenu[a].length ; b++){ //Read arrays[Menu Index][Menu]	
 					for(int c=0 ; c<this.allMenu[a][b].length ; c++) { //Read arrays[Menu Index][Menu][Menu Details]
 						//Set Menu Details
-						this.ordersFood[DataProcess.orderIndex][0]=this.allMenu[a][menuNumber-1][0]; //Foods Name
-						this.ordersFood[DataProcess.orderIndex][1]=this.allMenu[a][menuNumber-1][1]; // Price
+						this.ordersFood[DataProcess.orderIndex][0]=String.valueOf(qty); //Quantity
+						this.ordersFood[DataProcess.orderIndex][1]=this.allMenu[a][menuNumber-1][0]; //Foods Name
+						this.ordersFood[DataProcess.orderIndex][2]=this.allMenu[a][menuNumber-1][1]; //Price
 					}
 				}
 			}
@@ -106,13 +107,16 @@ public class DataProcess extends Menu implements Receipt{
 		//Looping for Multidimentional Array
 		for(int j=0 ; j<orderIndex ; j++) { //Read arrays[Order Indexs]
 			
-			//Print Index
-			System.out.print(j+1 + ".");
-			
 			for(int i=0 ; i<this.ordersFood[j].length ; i++) { //Read arrays[Order Indexs][Order Details]
 				
 				//Check Loop Index
 				if(i==0) {
+					//Show Customer Order Foods
+					System.out.print(" " + this.ordersFood[j][i]);
+				}
+				
+				//Check Loop Index
+				if(i==1) {
 					//Show Customer Order Foods
 					System.out.print("\t" + this.ordersFood[j][i]); 
 					
@@ -125,10 +129,10 @@ public class DataProcess extends Menu implements Receipt{
 				}
 				
 				//Check Loop Index
-				if(i==1) {
+				if(i==2) {
 					//Convert String to Double
 					double amount = Double.parseDouble(this.ordersFood[j][i]);
-					
+					amount *= Double.parseDouble(this.ordersFood[j][0]);
 					//Justify Price Length
 					if(this.ordersFood[j][i].length() < 5)
 						System.out.print("\t " + this.currency(amount, 0)); //Show Customer Order Price
@@ -146,8 +150,9 @@ public class DataProcess extends Menu implements Receipt{
 	public void sumNet() {
 	//Looping for Multidimentional Array
 		for(int j=0 ; j<DataProcess.orderIndex ; j++) { //Read arrays[Order Indexs]
-			for(int i=1 ; i<this.ordersFood[j].length ; i++) { //Read arrays[Order Indexs][Order Details]
-				this.net += Double.parseDouble(this.ordersFood[j][i]); //Sum Customer Order Price
+			for(int i=2 ; i<this.ordersFood[j].length ; i++) { //Read arrays[Order Indexs][Order Details]
+				double qty = (Double.parseDouble(this.ordersFood[j][i])*Double.parseDouble(this.ordersFood[j][0]));
+				this.net += qty; //Sum Customer Order Price
 			}
 		}
 	}
@@ -157,10 +162,15 @@ public class DataProcess extends Menu implements Receipt{
 //	Sum Order
 	public double sumOrder() {
 		this.sumNet();
+		
 		this.tax = (this.net*0.1);
 		int round = (int)(this.tax + this.net);
-		if(round % 10 == 9) round+=1;
-		this.total = round;
+		if(round % 10 > 0){
+			for(int i = 0 ; i<9 ; i++) {
+				if(round % 10 < 9)round+=1;
+			}
+			this.total = round+1;
+		}
 		
 		return this.total;
 	}	
@@ -210,7 +220,15 @@ public class DataProcess extends Menu implements Receipt{
 		System.out.println("Change        " + this.currency(change, 1));
 		System.out.println("");
 		System.out.println("Tax (10%)    " + " " + this.currency(this.tax, 1));
-		System.out.println("Net Sales     " + this.currency(this.net, 1));
+		
+		//Round Net Ammount
+		int netRound = (int)this.net;
+		
+		//Check Int Last Digit
+		if(netRound % 10 == 9) {
+			netRound += 1;
+		}
+		System.out.println("Net Sales     " + this.currency(netRound, 1));
 		System.out.println("\n--------------------------------------------------------------------------------");
 	}
 }
