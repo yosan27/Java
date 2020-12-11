@@ -1,7 +1,8 @@
-package tugasKasir;
+package kasirArrayList;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 public class DataProcess extends Menu implements Receipt{
 // 	Initialitation Variables
@@ -16,14 +17,16 @@ public class DataProcess extends Menu implements Receipt{
 	String formatted = dateTime.format(format);
 	
 //	Arrays Orders
-	private String[][] ordersFood = new String[10][3];
+	private ArrayList<ArrayList<String>> ordersFood = new ArrayList<ArrayList<String>>();
 	
 // 	Array Description
-	private String [] description = {"Food Name\t: ", "Price\t\t: "};
+	private ArrayList<String> description = new ArrayList<String>();
 	
 //	Constructor
 	public DataProcess(String name) {
 		this.name = name;
+		description.add("Food Name\t: ");
+		description.add("Price\t\t: ");
 	}
 	
 	
@@ -40,20 +43,20 @@ public class DataProcess extends Menu implements Receipt{
 				
 		//Looping for Multidimentional Array
 		for(int a=menuIndex-1 ; a<menuIndex ; a++) { //Read arrays[Menu Index from parameter]
-			for(int b=0 ; b<this.allMenu[a].length ; b++){ //Read arrays[Menu Index][Menu]	
+			for(int b=0 ; b<this.allMenu.get(a).size() ; b++){ //Read arrays[Menu Index][Menu]	
 				System.out.print(b+1 + "."); //Print Index
-				for(int c=0 ; c<this.allMenu[a][b].length ; c++) { //Read arrays[Menu Index][Menu][Menu Details]	
-					System.out.print("\t" + this.description[c]); //Print Description from Array
+				for(int c=0 ; c<this.allMenu.get(a).get(b).size() ; c++) { //Read arrays[Menu Index][Menu][Menu Details]	
+					System.out.print("\t" + this.description.get(c)); //Print Description from Array
 					
 					//Check Loop Index
 					if(c==0) {
-						System.out.println(this.allMenu[a][b][c]); //Print Menu Foods
+						System.out.println(this.allMenu.get(a).get(b).get(c)); //Print Menu Foods
 					}
 					
 					//Check Loop Index
 					if(c==1) {
 						//Convert String to Double
-						double amount = Double.parseDouble(this.allMenu[a][b][c]);
+						double amount = Double.parseDouble(this.allMenu.get(a).get(b).get(c));
 						//Print Menu Price
 						System.out.println(this.currency(amount, 0));
 					}
@@ -63,7 +66,7 @@ public class DataProcess extends Menu implements Receipt{
 		}
 		
 		//Set Menu Details Length
-		this.data = this.allMenu[menuIndex-1].length;
+		this.data = this.allMenu.get(menuIndex-1).size();
 	}
 	
 	
@@ -89,12 +92,13 @@ public class DataProcess extends Menu implements Receipt{
 	public void setFood(int menuNumber, int qty) {
 		//Looping for Multidimentional Array
 		for(int a=this.menuIndex-1 ; a<this.menuIndex ; a++) { //Read arrays[Menu Index from parameter]
-				for(int b=0 ; b<this.allMenu[a].length ; b++){ //Read arrays[Menu Index][Menu]	
-					for(int c=0 ; c<this.allMenu[a][b].length ; c++) { //Read arrays[Menu Index][Menu][Menu Details]
+				for(int b=0 ; b<this.allMenu.get(a).size() ; b++){ //Read arrays[Menu Index][Menu]	
+					for(int c=0 ; c<this.allMenu.get(a).get(b).size() ; c++) { //Read arrays[Menu Index][Menu][Menu Details]
 						//Set Menu Details
-						this.ordersFood[DataProcess.orderIndex][0]=String.valueOf(qty); //Quantity
-						this.ordersFood[DataProcess.orderIndex][1]=this.allMenu[a][menuNumber-1][0]; //Foods Name
-						this.ordersFood[DataProcess.orderIndex][2]=this.allMenu[a][menuNumber-1][1]; //Price
+						ordersFood.add(new ArrayList<String>());
+						this.ordersFood.get(DataProcess.orderIndex).add(String.valueOf(qty)); //Quantity
+						this.ordersFood.get(DataProcess.orderIndex).add(this.allMenu.get(a).get(menuNumber-1).get(0)); //Foods Name
+						this.ordersFood.get(DataProcess.orderIndex).add(this.allMenu.get(a).get(menuNumber-1).get(1)); //Price
 					}
 				}
 			}
@@ -107,36 +111,37 @@ public class DataProcess extends Menu implements Receipt{
 		//Looping for Multidimentional Array
 		for(int j=0 ; j<orderIndex ; j++) { //Read arrays[Order Indexs]
 			
-			for(int i=0 ; i<this.ordersFood[j].length ; i++) { //Read arrays[Order Indexs][Order Details]
+			for(int i=0 ; i<this.ordersFood.get(j).size() ; i++) { //Read arrays[Order Indexs][Order Details]
 				
 				//Check Loop Index
 				if(i==0) {
 					//Show Customer Order Foods
-					System.out.print(" " + this.ordersFood[j][i]);
+					System.out.print(" " + this.ordersFood.get(j).get(i));
 				}
 				
 				//Check Loop Index
 				if(i==1) {
 					//Show Customer Order Foods
-					System.out.print("\t" + this.ordersFood[j][i]); 
+					System.out.print("\t" + this.ordersFood.get(j).get(i)); 
 					
-					//Justify Price		
-					if(this.ordersFood[j][i].length() > 40 && this.ordersFood[j][i].length() < 48 )
+					//Justify Price	
+					if(this.ordersFood.get(j).get(i).length() > 40 && this.ordersFood.get(j).get(i).length() < 48 )
 						System.out.print("\t\t");
-					else if(this.ordersFood[j][i].length() > 48) System.out.print("\t");
-					else if(this.ordersFood[j][i].length() < 8) System.out.print("\t\t\t\t\t\t\t");
+					else if(this.ordersFood.get(j).get(i).length() > 48) System.out.print("\t");
+					else if(this.ordersFood.get(j).get(i).length() < 8) System.out.print("\t\t\t\t\t\t\t");
 					else System.out.print("\t\t\t\t\t\t");
 				}
 				
 				//Check Loop Index
 				if(i==2) {
 					//Convert String to Double
-					double amount = Double.parseDouble(this.ordersFood[j][i]);
-					amount *= Double.parseDouble(this.ordersFood[j][0]);
+					double amount = Double.parseDouble(this.ordersFood.get(j).get(i));
+					amount *= Double.parseDouble(this.ordersFood.get(j).get(0));
 					//Justify Price Length
 					if(String.valueOf(amount).length() < 5)
 						System.out.print("\t " + this.currency(amount, 0)); //Show Customer Order Price
 					else System.out.print("\t" + this.currency(amount, 0)); ////Show Customer Order Price
+					
 				}
 			}
 			//For Spacing
@@ -148,16 +153,16 @@ public class DataProcess extends Menu implements Receipt{
 
 //	Sum Net Sales
 	public void sumNet() {
-	//Looping for Multidimentional Array
-		for(int j=0 ; j<DataProcess.orderIndex ; j++) { //Read arrays[Order Indexs]
-			for(int i=0 ; i<this.ordersFood[j].length ; i++) { //Read arrays[Order Indexs][Order Details]
-				if(i==2) {
-					double qty = (Double.parseDouble(this.ordersFood[j][i])*Double.parseDouble(this.ordersFood[j][0]));
-					this.net += qty; //Sum Customer Order Price
+		//Looping for Multidimentional Array
+			for(int j=0 ; j<DataProcess.orderIndex ; j++) { //Read arrays[Order Indexs]
+				for(int i=0 ; i<this.ordersFood.get(j).size() ; i++) { //Read arrays[Order Indexs][Order Details]
+					if(i==2) {
+						double qty = (Double.parseDouble(this.ordersFood.get(j).get(2))*Double.parseDouble(this.ordersFood.get(j).get(0)));
+						this.net += qty; //Sum Customer Order Price
+					}
 				}
 			}
 		}
-	}
 	
 	
 	
